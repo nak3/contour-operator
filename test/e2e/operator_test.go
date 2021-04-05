@@ -578,7 +578,7 @@ func TestGateway(t *testing.T) {
 }
 
 func TestGatewayClusterIP(t *testing.T) {
-	testName := "test-gateway"
+	testName := "test-clusterip-gateway"
 	contourName := fmt.Sprintf("%s-contour", testName)
 	gcName := "test-gatewayclass"
 	cfg := objcontour.Config{
