@@ -532,12 +532,6 @@ func TestGateway(t *testing.T) {
 		t.Fatalf("failed to observe expected status conditions for gatewayclass %s: %v", gcName, err)
 	}
 
-	// The contour should now report available.
-	if err := waitForContourStatusConditions(ctx, kclient, 1*time.Minute, contourName, operatorNs, expectedContourConditions...); err != nil {
-		t.Fatalf("failed to observe expected status conditions for contour %s/%s: %v", operatorNs, testName, err)
-	}
-	t.Logf("observed expected status conditions for contour %s/%s", testName, operatorNs)
-
 	// Create the gateway namespace if it doesn't exist.
 	if err := newNs(ctx, kclient, cfg.SpecNs); err != nil {
 		t.Fatalf("failed to create namespace %s: %v", cfg.SpecNs, err)
@@ -557,6 +551,12 @@ func TestGateway(t *testing.T) {
 	if err := waitForGatewayStatusConditions(ctx, kclient, 3*time.Minute, gwName, cfg.SpecNs, expectedGatewayConditions...); err != nil {
 		t.Fatalf("failed to observe expected status conditions for gateway %s/%s: %v", cfg.SpecNs, gwName, err)
 	}
+
+	// The contour should now report available.
+	if err := waitForContourStatusConditions(ctx, kclient, 1*time.Minute, contourName, operatorNs, expectedContourConditions...); err != nil {
+		t.Fatalf("failed to observe expected status conditions for contour %s/%s: %v", operatorNs, testName, err)
+	}
+	t.Logf("observed expected status conditions for contour %s/%s", testName, operatorNs)
 
 	// Create a sample workload for e2e testing.
 	if err := newDeployment(ctx, kclient, appName, cfg.SpecNs, testAppImage, testAppReplicas); err != nil {
