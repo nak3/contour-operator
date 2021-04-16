@@ -297,10 +297,12 @@ func waitForContourStatusConditions(ctx context.Context, cl client.Client, timeo
 			return false, nil
 		}
 
-		envoyReplicas, err := envoyReplicas(ctx, cl, cntr.Spec.Namespace.Name)
-		if err != nil || cntr.Status.AvailableEnvoys != envoyReplicas {
-			return false, nil
-		}
+		/*
+			envoyReplicas, err := envoyReplicas(ctx, cl, cntr.Spec.Namespace.Name)
+			if err != nil || cntr.Status.AvailableEnvoys != envoyReplicas {
+				return false, nil
+			}
+		*/
 
 		expected := conditionMap(conditions...)
 		current := conditionMap(cntr.Status.Conditions...)
