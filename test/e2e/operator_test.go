@@ -124,12 +124,6 @@ func TestDefaultContour(t *testing.T) {
 	}
 	t.Logf("created contour %s/%s", cntr.Namespace, cntr.Name)
 
-	svcName := "envoy"
-	if err := updateLbSvcIPAndNodePorts(ctx, kclient, 1*time.Minute, specNs, svcName); err != nil {
-		t.Fatalf("failed to update service %s/%s: %v", specNs, svcName, err)
-	}
-	t.Logf("updated service %s/%s loadbalancer IP and nodeports", specNs, svcName)
-
 	if err := waitForContourStatusConditions(ctx, kclient, 5*time.Minute, testName, operatorNs, expectedContourConditions...); err != nil {
 		t.Fatalf("failed to observe expected status conditions for contour %s/%s: %v", operatorNs, testName, err)
 	}

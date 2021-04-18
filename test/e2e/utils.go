@@ -24,7 +24,6 @@ import (
 
 	operatorv1alpha1 "github.com/projectcontour/contour-operator/api/v1alpha1"
 	objcontour "github.com/projectcontour/contour-operator/internal/objects/contour"
-	objsvc "github.com/projectcontour/contour-operator/internal/objects/service"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -555,25 +554,6 @@ func waitForServiceDeletion(ctx context.Context, cl client.Client, timeout time.
 	})
 	if err != nil {
 		return fmt.Errorf("timed out waiting for service %s/%s: %v", ns, name, err)
-	}
-	return nil
-}
-
-// updateLbSvcIPAndNodePorts updates the loadbalancer IP to "127.0.0.1" and nodeports
-// to EnvoyNodePortHTTPPort and EnvoyNodePortHTTPSPort of the service referenced by ns/name.
-func updateLbSvcIPAndNodePorts(ctx context.Context, cl client.Client, timeout time.Duration, ns, name string) error {
-	svc, err := waitForService(ctx, cl, timeout, ns, name)
-	if err != nil {
-		return fmt.Errorf("failed to observe service %s/%s: %v", ns, name, err)
-	}
-	if svc.Spec.Type != corev1.ServiceTypeLoadBalancer {
-		return fmt.Errorf("invalid type %s for service %s/%s", svc.Spec.Type, ns, name)
-	}
-	svc.Spec.LoadBalancerIP = "127.0.0.1"
-	svc.Spec.Ports[0].NodePort = objsvc.EnvoyNodePortHTTPPort
-	svc.Spec.Ports[1].NodePort = objsvc.EnvoyNodePortHTTPSPort
-	if err := cl.Update(ctx, svc); err != nil {
-		return err
 	}
 	return nil
 }
